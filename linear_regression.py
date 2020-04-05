@@ -77,7 +77,7 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
     plt.ylabel("Training Cost")
     plt.show
 
-X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.data')
+X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons.data')
 
 X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
 
