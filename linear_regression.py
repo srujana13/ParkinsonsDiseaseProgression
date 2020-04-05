@@ -4,7 +4,7 @@ import sklearn
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model
-
+import preprocessing
 
 def initialize_parameters(lenw):
     w=np.random.randn(1, lenw)
@@ -62,39 +62,35 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
 
         print("Training Cost")
         print(cost_train)
-        print("Validation Cost")
-        print(MAE_train)
-
         print("Training MAE")
-        print(cost_train)
-        print("Validation MAE")
+        print(cost_val)
+
+
+        print("Testing Cost")
+        print(MAE_train)
+        print("Testing MAE")
         print(MAE_val)
+
 
     plt.plot(costs_train)
     plt.xlabel("Iterations")
     plt.ylabel("Training Cost")
     plt.show
 
-df=pd.read_csv('/Users/rajshreejain/alda/parkinsons_updrs.data')
-df.head()
-#print (df)
+X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.data')
 
-features=df.loc[:,df.columns!='total_UPDRS'].values[:,1:]
-labels=df.loc[:,'total_UPDRS'].values
+X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
 
-
-X=(features-features.mean()/features.max()-features.min())
-X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.33, random_state=5)
 X_train=X_train.T
-y_train=np.array([y_train])
 X_val=X_val.T
+y_train=np.array([y_train])
 y_val=np.array([y_val])
-linear_regression_model(X_train, y_train, X_val, y_val, 0.4, 2000)
+linear_regression_model(X_train, y_train, X_val, y_val, 0.4, 100)
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
 predictions=linear_regression.predict(X_val.T)
 
 MAE_with_library=(1.0/y_val.shape[1])*np.sum(np.abs(predictions-y_val.T))
-
+print ("with the library")
 print(MAE_with_library)
