@@ -19,8 +19,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 from tensorflow.keras import layers
 
-# Custom imports
-from utils.dataset_loader import ParkinsonDataset
+
 
 def mlp():
    
