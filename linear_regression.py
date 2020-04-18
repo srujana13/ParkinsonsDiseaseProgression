@@ -21,21 +21,26 @@ def forward_prop(X,w,b):
 def cost_function(z,y):
     m=y.shape[1]
     # print(float(1.0/2*m))
-    # print(np.sum(np.square(z-y)))
-    J=(1.0/2.0*float(m))*np.sum(np.square(z-y))
-    # print(J)
+    #print(np.sum(np.square(z-y)))
+    J=(float(1)/(float(2)*(m)))*np.sum(np.square(z-y))
+    #print(J)
     return J
 
 def back_prop(X,y,z):
     m=y.shape[1]
-    dz=(1/m)*(z-y)
+    dz=(float(1)/float(m))*(z-y)
+    #print(dz)
     dw=np.dot(dz,X.T)
+    #print(dw)
     db=np.sum(dz)
+    #print(db)
     return dw, db
 
 def gradient_descent_update(w,b,dw,db,learning_rate):
     w=w-learning_rate*dw
+    #print(learning_rate*dw)
     b=b-learning_rate*db
+    #print(learning_rate*db)
     return w, b
 
 def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
@@ -54,22 +59,22 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
         if i%10==0:
             costs_train.append(cost_train)
 
-        MAE_train=(1.0/float(m_train))*np.sum(np.abs(z_train-y_train))
+        MAE_train=(float(1)/float(m_train))*np.sum(np.abs(z_train-y_train))
 
         z_val=forward_prop(X_val, w, b)
         cost_val=cost_function(z_val, y_val)  
-        MAE_val=(1.0/float(m_val))*np.sum(np.abs(z_val-y_val))
+        MAE_val=(float(1)/float(m_val))*np.sum(np.abs(z_val-y_val))
 
-        print("Training Cost")
-        print(cost_train)
-        print("Training MAE")
-        print(cost_val)
+    print("Training Cost")
+    print(cost_train)
+    print("Validation Cost")
+    print(cost_val)
 
 
-        print("Testing Cost")
-        print(MAE_train)
-        print("Testing MAE")
-        print(MAE_val)
+    print("Training MAE")
+    print(MAE_train)
+    print("Validation MAE")
+    print(MAE_val)
 
 
     plt.plot(costs_train)
@@ -77,7 +82,8 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
     plt.ylabel("Training Cost")
     plt.show
 
-X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons.data')
+
+X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.data')
 
 X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
 
@@ -85,7 +91,7 @@ X_train=X_train.T
 X_val=X_val.T
 y_train=np.array([y_train])
 y_val=np.array([y_val])
-linear_regression_model(X_train, y_train, X_val, y_val, 0.4, 100)
+linear_regression_model(X_train, y_train, X_val, y_val,  0.001, 5000)
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
