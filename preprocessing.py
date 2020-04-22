@@ -20,6 +20,19 @@ def load_data(path):
     return X_train, X_test, y_train, y_test
 
 
+#load data with motor UPDRS as response variable and with only vocal features
+def load_data_for_classification(path):
+    parkinsons_data = pd.read_csv(path)
+
+    #use only vocal features for classification
+    X = parkinsons_data.drop(['age', 'sex', 'test_time', 'subject#', 'total_UPDRS', 'motor_UPDRS'], axis=1)
+    #response variable is motor UPDRS
+    y = parkinsons_data.loc[:, 'motor_UPDRS']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+    return X_train, X_test, y_train, y_test
+
+
 def random_forest_features(X_train, y_train, X_test):
 
     model = SelectFromModel(RandomForestRegressor(n_estimators=1000))
