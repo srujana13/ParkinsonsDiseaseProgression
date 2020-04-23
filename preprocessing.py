@@ -4,6 +4,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import SelectFromModel
+from sklearn.preprocessing import normalize
 
 
 def load_data(path):
@@ -20,13 +21,13 @@ def load_data(path):
     return X_train, X_test, y_train, y_test
 
 
-#load data with motor UPDRS as response variable and with only vocal features
+# load data with motor UPDRS as response variable and with only vocal features
 def load_data_for_classification(path):
     parkinsons_data = pd.read_csv(path)
 
-    #use only vocal features for classification
+    # use only vocal features for classification
     X = parkinsons_data.drop(['age', 'sex', 'test_time', 'subject#', 'total_UPDRS', 'motor_UPDRS'], axis=1)
-    #response variable is motor UPDRS
+    # response variable is motor UPDRS
     y = parkinsons_data.loc[:, 'motor_UPDRS']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
@@ -34,9 +35,14 @@ def load_data_for_classification(path):
 
 
 def random_forest_features(X_train, y_train, X_test):
+    # scalar = StandardScaler()
+    # scalar.fit(X_train)
+
+    transformed_X_train = normalize(X_train)
+    transformed_X_test = normalize(X_test)
 
     model = SelectFromModel(RandomForestRegressor(n_estimators=1000))
-    model.fit(X_train, y_train)
+    model.fit(transformed_X_train, X_test)
 
     selected_feat = X_train.columns[(model.get_support())]
 
@@ -44,6 +50,9 @@ def random_forest_features(X_train, y_train, X_test):
 
     X_train = X_train[selected_feat]
     X_test = X_test[selected_feat]
+
+    X_train = normalize(X_train)
+    X_test = normalize(X_test)
 
     return X_train, X_test
 
