@@ -42,7 +42,7 @@ def random_forest_features(X_train, y_train, X_test):
     transformed_X_test = normalize(X_test)
 
     model = SelectFromModel(RandomForestRegressor(n_estimators=1000))
-    model.fit(transformed_X_train, X_test)
+    model.fit(transformed_X_train, y_train)
 
     selected_feat = X_train.columns[(model.get_support())]
 
