@@ -33,12 +33,12 @@ def load_data(path):
     parkinsons_data = pd.read_csv(path)
 
     X = parkinsons_data.drop(['total_UPDRS', 'motor_UPDRS'], axis=1)
-    #y = parkinsons_data.loc[:, 'total_UPDRS']
+    y = parkinsons_data.loc[:, 'total_UPDRS']
 
-    # y2 is also a response variable but right now we are predicting only total_UPDRS score
-    y2 = parkinsons_data.loc[:, 'motor_UPDRS']
+   
+    #y2 = parkinsons_data.loc[:, 'motor_UPDRS']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y2, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     return X_train, X_test, y_train, y_test
 
@@ -92,7 +92,7 @@ def mlp():
     activation = 'sigmoid'
     lr = 0.0005
 
-    #results = pandas.DataFrame(columns=['Total-Test', 'Motor-Test'])
+    
 
     total_results, motor_results = [], []
     K = 5
