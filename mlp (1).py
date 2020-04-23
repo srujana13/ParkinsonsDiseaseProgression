@@ -85,7 +85,7 @@ def pca_features(X_train, X_test):
 def mlp():
    
     X_train, X_test, y_train, y_test = load_data('./parkinsons_updrs.data')
-    X_train, X_test = pca_features(X_train, X_test)
+    X_train, X_test = random_forest_features(X_train, y_train, X_test)
                                                   
     print(y_test)
     hidden_units = [500, 400, 300, 200]
