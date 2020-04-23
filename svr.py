@@ -1,5 +1,6 @@
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 import math
 
 
@@ -19,4 +20,6 @@ def svr_model(X_train, y_train, X_test, y_test):
     # calculate root mean squared error
     rmse = math.sqrt(mean_squared_error(y_test, y_pred))
 
-    return score, rmse
+    mae = math.sqrt(mean_absolute_error(y_test, y_pred))
+
+    return score, rmse, mae

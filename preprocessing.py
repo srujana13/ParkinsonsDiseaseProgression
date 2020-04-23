@@ -46,7 +46,7 @@ def pca_features(X_train, X_test):
     pca.fit(X_train)
 
     print("number of principal components selected are " + str(pca.n_components_))
-    # print(pca.components_)
+    print(pca.components_)
 
     X_train = pca.transform(X_train)
     X_test = pca.transform(X_test)
