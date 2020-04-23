@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import linear_model
 import preprocessing
 
+learning_rate=0.0004
+epochs=5000
 costs_train=[]
 def initialize_parameters(lenw):
     w=np.random.randn(1, lenw)
@@ -57,8 +59,8 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
         cost_train=cost_function(z_train, y_train)
         dw, db=back_prop(X_train, y_train, z_train)
         w,b=gradient_descent_update(w,b,dw,db,learning_rate)
-        if i%10==0:
-            costs_train.append(cost_train)
+        
+        costs_train.append(cost_train)
 
         MAE_train=(float(1)/float(m_train))*np.sum(np.abs(z_train-y_train))
 
@@ -66,19 +68,19 @@ def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
         cost_val=cost_function(z_val, y_val)  
         MAE_val=(float(1)/float(m_val))*np.sum(np.abs(z_val-y_val))
 
-        print (" learning_rate "+str(learning_rate)+" epochs "+str(epochs))
-        print("Training Cost")
-        print(cost_train)
-        print("Validation Cost")
-        print(cost_val)
+    print ("learning_rate "+str(learning_rate)+" epochs "+str(epochs))
+    print("Training Cost")
+    print(cost_train)
+    print("Validation Cost")
+    print(cost_val)
 
 
-        print("Training MAE")
-        print(MAE_train)
-        print("Validation MAE")
-        print(MAE_val)
-
-   
+    print("Training MAE")
+    print(MAE_train)
+    print("Validation MAE")
+    print(MAE_val)
+    print ("RMSE")
+    print(np.sqrt(((z_val - y_val) ** 2).mean()))
 
 X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.csv')
 X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
@@ -86,14 +88,18 @@ X_train=X_train.T
 X_val=X_val.T
 y_train=np.array([y_train])
 y_val=np.array([y_val])
-linear_regression_model(X_train, y_train, X_val, y_val,  0.0004 , 5000)
+linear_regression_model(X_train, y_train, X_val, y_val,  learning_rate , epochs)
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
 predictions=linear_regression.predict(X_val.T)
-print ("with the library")
+print ("MAE with the Sklearn library")
 MAE_with_library=(1.0/y_val.shape[1])*np.sum(np.abs(predictions-y_val.T))
 print(MAE_with_library)
+print ("RMSE with the SKlearn library")
+RMSE_with_library=(1.0/y_val.shape[1])*np.sum(np.abs(predictions-y_val.T))
+print(np.sqrt(((predictions - y_val) ** 2).mean()))
+
 
 plt.plot(costs_train)
 plt.xlabel("Iterations")
