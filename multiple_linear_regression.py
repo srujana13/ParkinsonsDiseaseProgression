@@ -86,7 +86,7 @@ X_train=X_train.T
 X_val=X_val.T
 y_train=np.array([y_train])
 y_val=np.array([y_val])
-linear_regression_model(X_train, y_train, X_val, y_val,  0.0001 , 500)
+linear_regression_model(X_train, y_train, X_val, y_val,  0.0004 , 5000)
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
