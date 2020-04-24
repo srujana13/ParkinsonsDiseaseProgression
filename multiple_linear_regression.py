@@ -6,93 +6,58 @@ from sklearn.model_selection import train_test_split
 from sklearn import linear_model
 import preprocessing
 
-learning_rate=0.0004
-epochs=5000
-costs_train=[]
-def initialize_parameters(lenw):
-    w=np.random.randn(1, lenw)
-    #random numbers through random normal distribution
-    b=0
-    return w,b
+learning_rate=0.04
+epochs=200
+MAE_val=[]
 
-def forward_prop(X,w,b):
-    z=np.dot(w,X)+b
-    return z
-    #w has dimension 1*n
-    #x has dimension n*m where n is the number of features and m is number of training samples
+def forward_propogation(X_input,weights,b):
+    return (b+np.dot(weights,X_input))
 
-def cost_function(z,y):
-    m=y.shape[1]
-    # print(float(1.0/2*m))
-    #print(np.sum(np.square(z-y)))
-    J=(float(1)/(float(2)*(m)))*np.sum(np.square(z-y))
-    #print(J)
-    return J
+def cost(z_predicted,y_actual):
+    return ((float(1)/(float(2)*(y_actual.shape[1])))*np.sum(np.square(z_predicted-y_actual)))
 
-def back_prop(X,y,z):
-    m=y.shape[1]
-    dz=(float(1)/float(m))*(z-y)
-    #print(dz)
-    dw=np.dot(dz,X.T)
-    #print(dw)
-    db=np.sum(dz)
-    #print(db)
-    return dw, db
+def back_propogation(X,y,z):
+    dz=(float(1)/float(y.shape[1]))*(z-y)
+    return (np.dot(dz,X.T)), np.sum(dz)
 
-def gradient_descent_update(w,b,dw,db,learning_rate):
-    w=w-learning_rate*dw
-    #print(learning_rate*dw)
-    b=b-learning_rate*db
-    #print(learning_rate*db)
-    return w, b
+def gradient_descent(w,b,dw,db,learning_rate):
+    return (w-learning_rate*dw), (b-learning_rate*db)
 
-def linear_regression_model(X_train,y_train,X_val,y_val,learning_rate,epochs):
-    lenw=X_train.shape[0]
-    w,b=initialize_parameters(lenw)
-    
-    m_train=y_train.shape[1]
-    m_val=y_val.shape[1]
+def linear_regression(X_train,y_train,X_val,y_val,learning_rate,epochs):
+    length_w=X_train.shape[0]
+    w,b=np.random.randn(1, length_w),0
+    rows_training,rows_validation=y_train.shape[1],y_val.shape[1]
 
-    for i in range(1, epochs+1):
-        z_train=forward_prop(X_train, w, b)
-        #print(cost_function(z_train, y_train))
-        cost_train=cost_function(z_train, y_train)
-        dw, db=back_prop(X_train, y_train, z_train)
-        w,b=gradient_descent_update(w,b,dw,db,learning_rate)
-        
-        costs_train.append(cost_train)
+    for i in range(epochs):
+        z_train=forward_propogation(X_train, w, b)
+        training_cost=cost(z_train, y_train)
+        dw, db=back_propogation(X_train, y_train, z_train)
+        w,b=gradient_descent(w,b,dw,db,learning_rate)
+        training_MAE=(float(1)/float(rows_training))*np.sum(np.abs(z_train-y_train))
 
-        MAE_train=(float(1)/float(m_train))*np.sum(np.abs(z_train-y_train))
-
-        z_val=forward_prop(X_val, w, b)
-        cost_val=cost_function(z_val, y_val)  
-        MAE_val=(float(1)/float(m_val))*np.sum(np.abs(z_val-y_val))
+        z_val=forward_propogation(X_val, w, b)
+        validation_cost=cost(z_val, y_val)  
+        validation_MAE=(float(1)/float(rows_validation))*np.sum(np.abs(z_val-y_val))
+        MAE_val.append(validation_MAE)
 
     print ("learning_rate "+str(learning_rate)+" epochs "+str(epochs))
-    print("Training Cost")
-    print(cost_train)
-    print("Validation Cost")
-    print(cost_val)
-
-
     print("Training MAE")
-    print(MAE_train)
+    print(training_MAE)
     print("Validation MAE")
-    print(MAE_val)
+    print(validation_MAE)
     print ("RMSE")
     print(np.sqrt(((z_val - y_val) ** 2).mean()))
 
 X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.csv')
 X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
-X_train=X_train.T
-X_val=X_val.T
-y_train=np.array([y_train])
-y_val=np.array([y_val])
-linear_regression_model(X_train, y_train, X_val, y_val,  learning_rate , epochs)
+X_train, X_val=X_train.T, X_val.T
+y_train, y_val=np.array([y_train]), np.array([y_val])
+linear_regression(X_train, y_train, X_val, y_val, learning_rate, epochs)
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
 predictions=linear_regression.predict(X_val.T)
+
 print ("MAE with the Sklearn library")
 MAE_with_library=(1.0/y_val.shape[1])*np.sum(np.abs(predictions-y_val.T))
 print(MAE_with_library)
@@ -101,7 +66,7 @@ RMSE_with_library=(1.0/y_val.shape[1])*np.sum(np.abs(predictions-y_val.T))
 print(np.sqrt(((predictions - y_val) ** 2).mean()))
 
 
-plt.plot(costs_train)
+plt.plot(MAE_val)
 plt.xlabel("Iterations")
 plt.ylabel("Training Cost")
 plt.show()
