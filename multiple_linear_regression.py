@@ -40,19 +40,23 @@ def linear_regression(X_train,y_train,X_val,y_val,learning_rate,epochs):
         validation_MAE=(float(1)/float(rows_validation))*np.sum(np.abs(z_val-y_val))
         MAE_val.append(validation_MAE)
 
-    print ("learning_rate "+str(learning_rate)+" epochs "+str(epochs))
-    print("Training MAE")
-    print(training_MAE)
-    print("Validation MAE")
-    print(validation_MAE)
-    print ("RMSE")
-    print(np.sqrt(((z_val - y_val) ** 2).mean()))
+    return training_MAE, validation_MAE, np.sqrt(((z_val - y_val) ** 2).mean())
 
 X_train, X_val, y_train, y_val = preprocessing.load_data('./parkinsons_updrs.csv')
 X_train, X_val = preprocessing.random_forest_features(X_train, y_train, X_val)
 X_train, X_val=X_train.T, X_val.T
 y_train, y_val=np.array([y_train]), np.array([y_val])
-linear_regression(X_train, y_train, X_val, y_val, learning_rate, epochs)
+
+training_MAE, validation_MAE, RMSE=linear_regression(X_train, y_train, X_val, y_val, learning_rate, epochs)
+
+print ("learning_rate "+str(learning_rate)+" epochs "+str(epochs))
+print("Training MAE")
+print(training_MAE)
+print("Validation MAE")
+print(validation_MAE)
+print ("RMSE")
+print (RMSE)
+
 
 linear_regression=linear_model.LinearRegression()
 model=linear_regression.fit(X_train.T, y_train.T)
@@ -68,5 +72,5 @@ print(np.sqrt(((predictions - y_val) ** 2).mean()))
 
 plt.plot(MAE_val)
 plt.xlabel("Iterations")
-plt.ylabel("Training Cost")
+plt.ylabel("MAE values")
 plt.show()
