@@ -6,8 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import linear_model
 import preprocessing
 
-learning_rate=0.0004
-epochs=5000
+learning_rate=0.0001
+epochs=200
 MAE_val=[]
 
 def forward_propogation(X_input,weights,b):
@@ -36,7 +36,7 @@ def linear_regression(X_train,y_train,X_test,y_test,learning_rate,epochs):
         training_MAE=(float(1)/float(rows_training))*np.sum(np.abs(z_train-y_train))
 
         z_test=forward_propogation(X_test, w, b)
-        validation_cost=cost(z_val, y_test)  
+        validation_cost=cost(z_test, y_test)  
         validation_MAE=(float(1)/float(rows_validation))*np.sum(np.abs(z_test-y_test))
         MAE_val.append(validation_MAE)
 
