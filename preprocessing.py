@@ -35,14 +35,9 @@ def load_data_for_classification(path):
 
 
 def random_forest_features(X_train, y_train, X_test):
-    # scalar = StandardScaler()
-    # scalar.fit(X_train)
-
-    transformed_X_train = normalize(X_train)
-    transformed_X_test = normalize(X_test)
 
     model = SelectFromModel(RandomForestRegressor(n_estimators=1000))
-    model.fit(transformed_X_train, y_train)
+    model.fit(X_train, y_train)
 
     selected_feat = X_train.columns[(model.get_support())]
 
@@ -50,9 +45,6 @@ def random_forest_features(X_train, y_train, X_test):
 
     X_train = X_train[selected_feat]
     X_test = X_test[selected_feat]
-
-    X_train = normalize(X_train)
-    X_test = normalize(X_test)
 
     return X_train, X_test
 
